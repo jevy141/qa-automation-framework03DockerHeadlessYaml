@@ -6,7 +6,8 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/jevy141/qa-automation-framework2.git'
+                git branch: 'main',
+                url: 'https://github.com/jevy141/qa-automation-framework2.git'
             }
         }
 
