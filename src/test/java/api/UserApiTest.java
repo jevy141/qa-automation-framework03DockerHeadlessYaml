@@ -40,7 +40,7 @@ import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 
-import org.slf4j.helpers.Reporter;
+import org.testng.Reporter;
 import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.annotations.Test;
