@@ -16,10 +16,10 @@ public class CartPage {
 	DriverUtils utils;
 	By checkoutBtn = By.id("checkout");
 	
-	public CartPage(WebDriver driver)
+	public CartPage(WebDriver getDriver)
 	{
-		this.driver=driver;
-		this.utils = new DriverUtils(driver);
+		this.driver=getDriver;
+		this.utils = new DriverUtils(this.driver);
 	}
 	
 	

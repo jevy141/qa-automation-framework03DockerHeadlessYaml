@@ -14,10 +14,10 @@ public class LoginPage {
       By password=By.id("password");
       By loginBtn=By.name("login-button");
       
-      public LoginPage(WebDriver driver)
+      public LoginPage(WebDriver getDriver)
       {
-    	  this.driver= driver;
-    	  this.utils = new DriverUtils(driver);
+    	  this.driver= getDriver;
+    	  this.utils = new DriverUtils(this.driver);
       }
 
     

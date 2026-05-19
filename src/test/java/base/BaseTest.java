@@ -1,28 +1,44 @@
 package base;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Properties;
-
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
+
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+
 
 public class BaseTest {
 
-	public WebDriver driver;
+	public static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 	public Properties prop;
 	
+	
+	public WebDriver getDriver()
+	{
+		return driver.get();
+	}
+	
+	@Parameters("browser")
 	@BeforeMethod
-	public void setup()
+	public void setup( String browser) throws IOException
 	{
 		try {
 			prop = new Properties();
@@ -34,7 +50,7 @@ public class BaseTest {
 		{
 			e.printStackTrace();
 		}
-		WebDriverManager.chromedriver().setup();
+		
 		
 		ChromeOptions options= new ChromeOptions();
 		
@@ -45,37 +61,48 @@ public class BaseTest {
 		options.addArguments("--disable-gpu");
 		options.addArguments("--window-size=1920,1080");
 		options.addArguments("--remote-allow-origins=*");
-		//options.addArguments("--disable-notifications");
-		//options.addArguments("--disable-infobars");
-		//options.addArguments("--disable-save-password-bubble");
+
+		if(browser.equalsIgnoreCase("chrome"))
+		{
+			WebDriverManager.chromedriver().setup();
+			driver.set(new ChromeDriver(options));
+			
+		}
 		
-		HashMap<String, Object> prefs = new HashMap<>();
-	    prefs.put("credentials_enable_service", false);
-	    prefs.put("profile.password_manager_enabled", false);
-	    
+		else if(browser.equalsIgnoreCase("edge"))
+		{
+			 EdgeOptions edgeOptions = new EdgeOptions();
+	            edgeOptions.addArguments("--headless=new");
+
+	            driver.set(new EdgeDriver(edgeOptions));
+
+		}
 		
-		options.setExperimentalOption("prefs", prefs);
+		else if(browser.equalsIgnoreCase("firefox"))
+		{
+			WebDriverManager.firefoxdriver().setup();
+			FirefoxOptions firefoxOptions= new FirefoxOptions();
+			driver.set(new FirefoxDriver(firefoxOptions));
+		}
+		
+	
+		
+		getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+		getDriver().manage().window().maximize();
+		getDriver().get("https://www.saucedemo.com/");
 		
 		
 		
 		
-		driver= new ChromeDriver(options);
-		
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(Integer.parseInt(prop.getProperty("timeout"))));
-		driver.get(prop.getProperty("url"));
-		driver.manage().window().maximize();
 		
 	}
 	
-	public WebDriver getDriver()
-	{
-		return driver;
-	}
 	
-	@AfterClass
+	@AfterMethod
 	public void tearDown()
 	{
-		driver.quit();
+		getDriver().quit();
+		driver.remove();
 	}
 	
 }

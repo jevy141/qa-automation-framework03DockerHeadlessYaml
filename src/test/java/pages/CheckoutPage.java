@@ -21,10 +21,10 @@ public class CheckoutPage {
 	By continueBtn = By.id("continue");
 	By finishBtn=By.xpath("//button[@data-test='finish']");
 	
-	public CheckoutPage(WebDriver driver)
+	public CheckoutPage(WebDriver getDriver)
 	{
-		this.driver=driver;
-		this.utils = new DriverUtils(driver);
+		this.driver=getDriver;
+		this.utils = new DriverUtils(this.driver);
 	}
 	
 	public void completeCheckout(String first , String last, String postalcode )

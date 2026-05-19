@@ -18,20 +18,20 @@ public class TestListener implements ITestListener{
 	
 	//Represents one test case entry in report. A single row/block in report UI
 	//ExtentTest (Test 1),ExtentTest (Test 2),ExtentTest (Test 3)
-	ExtentTest test;
 	
+		ThreadLocal<ExtentTest> test = new ThreadLocal<>();
 	
 	
 	@Override
 	public void onTestStart(ITestResult result)
 	{
-		test=extent.createTest(result.getName());
+		test.set(extent.createTest(result.getName()));
 	}
 	
 	@Override
 	public void onTestSuccess(ITestResult result)
 	{
-		test.pass("Test Passed");
+		test.get().pass("Test Passed");
 	}
 	
 	@Override
@@ -49,8 +49,8 @@ public class TestListener implements ITestListener{
 		
 		String path = ScreenShotUtil.captureScreenShot(driver, testName);
 		
-		test.fail(result.getThrowable());
-		test.addScreenCaptureFromPath(path);		       
+		test.get().fail(result.getThrowable());
+		test.get().addScreenCaptureFromPath(path);		       
 	}
 	
 	@Override

@@ -23,27 +23,27 @@ public class EndToEndTest extends BaseTest{
 	@Test
 	public void testEcommerceFlow()
 	{
-		LoginPage loginpage= new LoginPage(driver);
+		LoginPage loginpage= new LoginPage(getDriver());
 		loginpage.login("standard_user", "secret_sauce");
 		
 		
-		ProductsPage productspage= new ProductsPage(driver);
+		ProductsPage productspage= new ProductsPage(getDriver());
 		productspage.addProductToCart();
 		productspage.goToCart();
 		
-		CartPage cartpage= new CartPage(driver);
+		CartPage cartpage= new CartPage(getDriver());
 		cartpage.clickCheckout();
 		
-		CheckoutPage checkoutpage= new CheckoutPage(driver);
+		CheckoutPage checkoutpage= new CheckoutPage(getDriver());
 		checkoutpage.completeCheckout("Han", "Zhen", "400706");
 		
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
 		WebElement message = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h2[@data-test='complete-header']")));
 
 		String actualtext = message.getText();
-		Assert.assertEquals(actualtext, "Wrong Text");
-		//Assert.assertTrue(actualtext.contains("Thank you for your order!"));
+		//Assert.assertEquals(actualtext, "Wrong Text");
+		Assert.assertTrue(actualtext.contains("Thank you for your order!"));
 		
 		
 		

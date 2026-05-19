@@ -13,10 +13,10 @@ public class ProductsPage {
 	By addToCart= By.id("add-to-cart-sauce-labs-backpack");
 	By cartIcon= By.xpath("//a[@data-test='shopping-cart-link']");
 	
-	public ProductsPage(WebDriver driver)
+	public ProductsPage(WebDriver getDriver)
 	{
-		this.driver=driver;
-		this.utils= new DriverUtils(driver);
+		this.driver=getDriver;
+		this.utils= new DriverUtils(this.driver);
 		
 		
 	}
