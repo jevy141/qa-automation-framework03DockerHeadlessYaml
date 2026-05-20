@@ -1,30 +1,32 @@
-pipeline
-{
-    agent any
+pipeline {
+agent any
 
-    stages
-    {
-        stage('Build & Test')
-        {
-            steps
-            {
-                bat 'mvn clean test -Dbrowser=chrome'
-            }
+stages {
+
+    stage('Build & Test') {
+        steps {
+            bat 'mvn clean test -Dbrowser=chrome'
         }
     }
+}
 
-    post
-    {
-        always
-        {
-            publishHTML([
-                allowMissing: false,
-                alwaysLinkToLastBuild: true,
-                keepAll: true,
-                reportDir: 'reports',
-                reportFiles: 'extent-report.html',
-                reportName: 'Extent Report'
-            ])
-        }
+post {
+    always {
+        emailext(
+            subject: "Jenkins Build: ${currentBuild.currentResult}",
+            body: """
+                Build Status: ${currentBuild.currentResult}
+
+                Project: ${env.JOB_NAME}
+                Build Number: ${env.BUILD_NUMBER}
+
+                Check console output:
+                ${env.BUILD_URL}
+            """,
+            to: "jevy141hanjenkins@gmail.com"
+        )
     }
+}
+
+
 }
