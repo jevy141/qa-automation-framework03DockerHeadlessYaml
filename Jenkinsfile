@@ -1,20 +1,30 @@
-pipeline {
-
+pipeline
+{
     agent any
 
-    stages {
-
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                url: 'https://github.com/jevy141/qa-automation-framework2.git'
+    stages
+    {
+        stage('Build & Test')
+        {
+            steps
+            {
+                bat 'mvn clean test -Dbrowser=chrome'
             }
         }
+    }
 
-        stage('Build & Test') {
-            steps {
-               bat "mvn clean test -Dbrowser=%BROWSER%"
-            }
+    post
+    {
+        always
+        {
+            publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'reports',
+                reportFiles: 'extent-report.html',
+                reportName: 'Extent Report'
+            ])
         }
     }
 }
