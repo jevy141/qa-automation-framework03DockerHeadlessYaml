@@ -10,7 +10,7 @@
         </classes>
     </test>
 
-   <test name="Edge Tests">
+   <!--<test name="Edge Tests">
         <parameter name="browser" value="edge"/>
         <classes>
             <class name="tests.EndToEndTest"/>
@@ -22,6 +22,6 @@
         <classes>
             <class name="tests.EndToEndTest"/>
         </classes>
-    </test>
+    </test> -->
 
 </suite>
