@@ -3,14 +3,14 @@
 <suite name="Automation Suite" parallel="tests" thread-count="3">
 
     <test name="Chrome Tests">
-        <parameter name="browser" value="chrome"/>
+        <parameter name="browser" value="${browser}"/>
         <classes>
             <class name="tests.EndToEndTest"/>
             <class name="api.UserApiTest"/>
         </classes>
     </test>
 
-    <test name="Edge Tests">
+   <!--- <test name="Edge Tests">
         <parameter name="browser" value="edge"/>
         <classes>
             <class name="tests.EndToEndTest"/>
@@ -22,6 +22,6 @@
         <classes>
             <class name="tests.EndToEndTest"/>
         </classes>
-    </test>
+    </test>-->
 
 </suite>

@@ -38,7 +38,7 @@ public class BaseTest {
 	
 	@Parameters("browser")
 	@BeforeMethod
-	public void setup( String browser) throws IOException
+	public void setup(@Optional("chrome") String browser) throws IOException
 	{
 		try {
 			prop = new Properties();
@@ -57,32 +57,30 @@ public class BaseTest {
 		
 	    
 		options.addArguments("--guest");
-		options.addArguments("--headless=new");
+		//options.addArguments("--headless=new");
 		options.addArguments("--disable-gpu");
 		options.addArguments("--window-size=1920,1080");
 		options.addArguments("--remote-allow-origins=*");
 
 		if(browser.equalsIgnoreCase("chrome"))
 		{
-			WebDriverManager.chromedriver().setup();
+	
 			driver.set(new ChromeDriver(options));
 			
 		}
 		
 		else if(browser.equalsIgnoreCase("edge"))
 		{
-			 EdgeOptions edgeOptions = new EdgeOptions();
-	            edgeOptions.addArguments("--headless=new");
+	
 
-	            driver.set(new EdgeDriver(edgeOptions));
+	            driver.set(new EdgeDriver());
 
 		}
 		
 		else if(browser.equalsIgnoreCase("firefox"))
 		{
-			WebDriverManager.firefoxdriver().setup();
-			FirefoxOptions firefoxOptions= new FirefoxOptions();
-			driver.set(new FirefoxDriver(firefoxOptions));
+
+			driver.set(new FirefoxDriver());
 		}
 		
 	
