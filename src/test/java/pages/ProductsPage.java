@@ -1,7 +1,11 @@
 package pages;
 
+import java.time.Duration;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import utils.DriverUtils;
 
@@ -11,7 +15,9 @@ public class ProductsPage {
 	DriverUtils utils;
 	
 	By addToCart= By.id("add-to-cart-sauce-labs-backpack");
-	By cartIcon= By.xpath("//a[@data-test='shopping-cart-link']");
+	//By cartIcon= By.xpath("//a[@data-test='shopping-cart-link']");
+	By cartIcon = By.className("shopping_cart_link");
+
 	
 	public ProductsPage(WebDriver getDriver)
 	{
@@ -30,6 +36,11 @@ public class ProductsPage {
 	}
 	public void goToCart()
 	{
-		driver.findElement(cartIcon).click();
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+		wait.until(ExpectedConditions.elementToBeClickable(cartIcon)).click();
+
+		wait.until(ExpectedConditions.urlContains("cart")
+		);
 	}
 }

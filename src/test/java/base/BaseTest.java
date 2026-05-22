@@ -9,6 +9,8 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
@@ -54,36 +56,35 @@ public class BaseTest {
 		}
 		
 		
-		ChromeOptions options= new ChromeOptions();
+		if(browser == null)
+		{
+		    browser = "chrome";
+		}
 		
-		
-	    
-		options.addArguments("--guest");
-		//options.addArguments("--headless=new");
-		options.addArguments("--disable-gpu");
-		options.addArguments("--window-size=1920,1080");
-		options.addArguments("--remote-allow-origins=*");
-
 		if(browser.equalsIgnoreCase("chrome"))
 		{
+
 	
-			driver.set(new ChromeDriver(options));
 			
+			ChromeOptions options = new ChromeOptions();
+
+		    options.addArguments("--headless=new");
+		    options.addArguments("--no-sandbox");
+		    options.addArguments("--disable-dev-shm-usage");
+		    options.addArguments("--disable-gpu");
+		    options.addArguments("--window-size=1920,1080");
+		    options.addArguments("--remote-allow-origins=*");
+
+		    Map<String, Object> prefs = new HashMap<>();
+
+		    prefs.put("credentials_enable_service", false);
+		    prefs.put("profile.password_manager_enabled", false);
+
+		    options.setExperimentalOption("prefs", prefs);
+
+		    driver.set(new ChromeDriver(options));
 		}
 		
-		else if(browser.equalsIgnoreCase("edge"))
-		{
-	
-
-	            driver.set(new EdgeDriver());
-
-		}
-		
-		else if(browser.equalsIgnoreCase("firefox"))
-		{
-
-			driver.set(new FirefoxDriver());
-		}
 		
 	
 		

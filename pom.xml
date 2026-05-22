@@ -3,6 +3,11 @@
   <groupId>com.qa</groupId>
   <artifactId>automationframework3DockerHeadless</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  
+  <properties>
+    <maven.compiler.release>17</maven.compiler.release>
+</properties>
+
   <dependencies>
 
     <!-- Selenium -->

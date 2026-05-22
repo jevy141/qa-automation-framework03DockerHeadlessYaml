@@ -1,6 +1,7 @@
 package pages;
 
 import java.time.Duration;
+import org.openqa.selenium.JavascriptExecutor;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -27,9 +28,15 @@ public class CartPage {
 	public void clickCheckout()
 	
 	{
-		
+		System.out.println(driver.getPageSource());
 		 WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 		 WebElement checkout=wait.until(ExpectedConditions.elementToBeClickable(checkoutBtn));
-		 checkout.click();
+		 JavascriptExecutor js = (JavascriptExecutor) driver;
+		 js.executeScript("arguments[0].click();", checkout);
+		 
+		 System.out.println(driver.getCurrentUrl());
+		 wait.until(
+			        ExpectedConditions.urlContains("checkout-step-one")
+			    );
 	}
 }
