@@ -3,9 +3,15 @@ pipeline {
 
     stages {
 
-        stage('Build & Test') {
+        stage('Docker Build') {
             steps {
-                bat 'mvn clean test -Dbrowser=chrome'
+                bat 'docker build -t qa-framework .'
+            }
+        }
+
+        stage('Docker Run') {
+            steps {
+                bat 'docker run --rm qa-framework'//This automatically removes stopped containers.
             }
         }
 
@@ -34,14 +40,14 @@ pipeline {
             emailext(
                 subject: "Jenkins Build: ${currentBuild.currentResult}",
                 body: """
-                    Build Status: ${currentBuild.currentResult}
+Build Status: ${currentBuild.currentResult}
 
-                    Project: ${env.JOB_NAME}
-                    Build Number: ${env.BUILD_NUMBER}
+Project: ${env.JOB_NAME}
+Build Number: ${env.BUILD_NUMBER}
 
-                    Check console output:
-                    ${env.BUILD_URL}
-                """,
+Check console output:
+${env.BUILD_URL}
+""",
                 to: "jevy141hanjenkins@gmail.com"
             )
         }
