@@ -1,111 +1,111 @@
 package pages;
 
 import java.time.Duration;
-import org.openqa.selenium.JavascriptExecutor;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import java.time.Duration;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import utils.DriverUtils;
 
 public class CheckoutPage {
 
-	WebDriver driver;
-	DriverUtils utils;
-	
-	By firstName= By.id("first-name");
-	By lastName= By.id("last-name");
-	By zip= By.id("postal-code");
-	By continueBtn = By.id("continue");
-	By finishBtn=By.xpath("//button[@data-test='finish']");
-	
-	public CheckoutPage(WebDriver getDriver)
-	{
-		this.driver=getDriver;
-		this.utils = new DriverUtils(this.driver);
-	}
-	
-	public void completeCheckout(String first, String last, String postalcode) {
+    WebDriver driver;
 
-	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+    public CheckoutPage(WebDriver driver) {
+        this.driver = driver;
+    }
 
-	    Actions actions = new Actions(driver);
+    By firstName = By.id("first-name");
+    By lastName = By.id("last-name");
+    By zip = By.id("postal-code");
 
-	    // First Name
-	    WebElement firstNameField =
-	            wait.until(ExpectedConditions.visibilityOfElementLocated(firstName));
+    By continueBtn = By.id("continue");
 
-	    firstNameField.clear();
-	    firstNameField.sendKeys(first);
+    By finishBtn = By.id("finish");
 
-	    // Last Name
-	    WebElement lastNameField =
-	            wait.until(ExpectedConditions.visibilityOfElementLocated(lastName));
+    public void completeCheckout(String first, String last, String postalcode) throws InterruptedException{
 
-	    lastNameField.clear();
-	    lastNameField.sendKeys(last);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
-	    // Postal Code
-	    WebElement zipField =
-	            wait.until(ExpectedConditions.visibilityOfElementLocated(zip));
+        Actions actions = new Actions(driver);
 
-	    zipField.clear();
-	    zipField.sendKeys(postalcode);
+        JavascriptExecutor js = (JavascriptExecutor) driver;
 
-	    // Debug Logs for Docker/Jenkins
-	    System.out.println("Docker Log - First Name: ["
-	            + firstNameField.getAttribute("value") + "]");
+        // Ensure proper Docker window size
+        driver.manage().window().setSize(new Dimension(1920, 1080));
 
-	    System.out.println("Docker Log - Last Name: ["
-	            + lastNameField.getAttribute("value") + "]");
+        // FIRST NAME
+        WebElement firstNameField =
+                wait.until(ExpectedConditions.visibilityOfElementLocated(firstName));
 
-	    System.out.println("Docker Log - Zip Code: ["
-	            + zipField.getAttribute("value") + "]");
+        firstNameField.clear();
+        firstNameField.sendKeys(first);
 
-	    // Continue Button
-	    WebElement continueButton =
-	            wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
+        // LAST NAME
+        WebElement lastNameField =
+                wait.until(ExpectedConditions.visibilityOfElementLocated(lastName));
 
-	    try {
+        lastNameField.clear();
+        lastNameField.sendKeys(last);
 
-	        actions.moveToElement(continueButton).click().perform();
+        // ZIP
+        WebElement zipField =
+                wait.until(ExpectedConditions.visibilityOfElementLocated(zip));
 
-	    } catch (Exception e) {
+        zipField.clear();
+        zipField.sendKeys(postalcode);
 
-	        System.out.println("Actions click failed. Using JS Click.");
+        // VERIFY VALUES
+        System.out.println("First Name: " +
+                firstNameField.getAttribute("value"));
 
-	        ((JavascriptExecutor) driver)
-	                .executeScript("arguments[0].click();", continueButton);
-	    }
+        System.out.println("Last Name: " +
+                lastNameField.getAttribute("value"));
 
-	    // Verify Step Two Loaded
-	    wait.until(ExpectedConditions.urlContains("checkout-step-two"));
+        System.out.println("Zip Code: " +
+                zipField.getAttribute("value"));
 
-	    System.out.println("Reached Checkout Step Two");
+        // CONTINUE BUTTON
+        WebElement continueButton =
+                wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
 
-	    // Finish Button
-	    WebElement finish =
-	            wait.until(ExpectedConditions.elementToBeClickable(finishBtn));
+        // Scroll into view
+        js.executeScript("arguments[0].scrollIntoView(true);", continueButton);
 
-	    try {
+        Thread.sleep(1000);
 
-	        actions.moveToElement(finish).click().perform();
+        // Try Actions click
+        actions.moveToElement(continueButton).click().perform();
 
-	    } catch (Exception e) {
+        Thread.sleep(2000);
 
-	        System.out.println("Actions click failed on Finish. Using JS Click.");
+        // Fallback JS click if still stuck
+        if(driver.getCurrentUrl().contains("checkout-step-one")) {
 
-	        ((JavascriptExecutor) driver)
-	                .executeScript("arguments[0].click();", finish);
-	    }
+            System.out.println("Actions click failed. Trying JS click.");
 
-	    System.out.println("Checkout Completed Successfully");
-	}
+            js.executeScript("arguments[0].click();", continueButton);
+        }
+
+        // WAIT FOR NEXT PAGE
+        wait.until(ExpectedConditions.urlContains("checkout-step-two"));
+
+        System.out.println("Moved to checkout-step-two");
+
+        // FINISH BUTTON
+        WebElement finish =
+                wait.until(ExpectedConditions.elementToBeClickable(finishBtn));
+
+        js.executeScript("arguments[0].scrollIntoView(true);", finish);
+
+        Thread.sleep(1000);
+
+        actions.moveToElement(finish).click().perform();
+
+        System.out.println("Checkout completed");
+    }
 }
