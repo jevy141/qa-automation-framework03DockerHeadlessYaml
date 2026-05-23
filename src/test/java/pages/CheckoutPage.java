@@ -33,20 +33,26 @@ public class CheckoutPage {
 	
 	public void completeCheckout(String first , String last, String postalcode )
 	{
-		
-		System.out.println(driver.getCurrentUrl());
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-		wait.until(ExpectedConditions.visibilityOfElementLocated(firstName)).sendKeys(first);
-		
-		driver.findElement(lastName).sendKeys(last);
-		driver.findElement(zip).sendKeys(postalcode);
-		driver.findElement(continueBtn).click();
-		
-		
-		wait.until(ExpectedConditions.urlContains("checkout-step-two"));
-        WebElement finish = wait.until(ExpectedConditions.elementToBeClickable(finishBtn));
-        finish.click();
-		
+	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
+	    wait.until(ExpectedConditions.visibilityOfElementLocated(firstName)).sendKeys(first);
+
+	    wait.until(ExpectedConditions.visibilityOfElementLocated(lastName)).sendKeys(last);
+
+	    wait.until(ExpectedConditions.visibilityOfElementLocated(zip)).sendKeys(postalcode);
+
+	    WebElement continueButton =
+	            wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
+
+	    continueButton.click();
+	     
+	    System.out.println(driver.getCurrentUrl());
+ 
+	    wait.until(ExpectedConditions.urlContains("checkout-step-two"));
+
+	    WebElement finish =
+	            wait.until(ExpectedConditions.elementToBeClickable(finishBtn));
+
+	    finish.click();
 	}
 }
