@@ -6,12 +6,14 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Properties;
 import io.github.bonigarcia.wdm.WebDriverManager;
+
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import java.util.HashMap;
 import java.util.Map;
-
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 
@@ -89,7 +91,7 @@ public class BaseTest {
 	
 		
 		getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-		getDriver().manage().window().maximize();
+		//getDriver().manage().window().setSize(new Dimension(1920,1080));)
 		getDriver().get("https://www.saucedemo.com/");
 		
 		
