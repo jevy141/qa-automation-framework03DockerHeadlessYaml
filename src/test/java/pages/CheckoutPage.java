@@ -27,15 +27,14 @@ public class CheckoutPage {
 
     By finishBtn = By.id("finish");
 
-    public void completeCheckout(String first, String last, String postalcode) throws InterruptedException{
+    public void completeCheckout(String first, String last, String postalcode)
+            throws InterruptedException {
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
-        Actions actions = new Actions(driver);
-
         JavascriptExecutor js = (JavascriptExecutor) driver;
 
-        // Ensure proper Docker window size
+        // Window size for Docker
         driver.manage().window().setSize(new Dimension(1920, 1080));
 
         // FIRST NAME
@@ -52,7 +51,7 @@ public class CheckoutPage {
         lastNameField.clear();
         lastNameField.sendKeys(last);
 
-        // ZIP
+        // ZIP CODE
         WebElement zipField =
                 wait.until(ExpectedConditions.visibilityOfElementLocated(zip));
 
@@ -60,41 +59,35 @@ public class CheckoutPage {
         zipField.sendKeys(postalcode);
 
         // VERIFY VALUES
-        System.out.println("First Name: " +
-                firstNameField.getAttribute("value"));
+        System.out.println("First Name Entered: "
+                + firstNameField.getAttribute("value"));
 
-        System.out.println("Last Name: " +
-                lastNameField.getAttribute("value"));
+        System.out.println("Last Name Entered: "
+                + lastNameField.getAttribute("value"));
 
-        System.out.println("Zip Code: " +
-                zipField.getAttribute("value"));
+        System.out.println("Zip Entered: "
+                + zipField.getAttribute("value"));
 
         // CONTINUE BUTTON
         WebElement continueButton =
-                wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
+                wait.until(ExpectedConditions.visibilityOfElementLocated(continueBtn));
 
         // Scroll into view
         js.executeScript("arguments[0].scrollIntoView(true);", continueButton);
 
         Thread.sleep(1000);
 
-        // Try Actions click
-        actions.moveToElement(continueButton).click().perform();
+        // JAVASCRIPT CLICK (BEST FOR DOCKER)
+        js.executeScript("arguments[0].click();", continueButton);
 
-        Thread.sleep(2000);
+        // DEBUG
+        System.out.println("Current URL After Continue Click: "
+                + driver.getCurrentUrl());
 
-        // Fallback JS click if still stuck
-        if(driver.getCurrentUrl().contains("checkout-step-one")) {
-
-            System.out.println("Actions click failed. Trying JS click.");
-
-            js.executeScript("arguments[0].click();", continueButton);
-        }
-
-        // WAIT FOR NEXT PAGE
+        // WAIT FOR STEP TWO
         wait.until(ExpectedConditions.urlContains("checkout-step-two"));
 
-        System.out.println("Moved to checkout-step-two");
+        System.out.println("Moved to Checkout Step Two");
 
         // FINISH BUTTON
         WebElement finish =
@@ -104,8 +97,8 @@ public class CheckoutPage {
 
         Thread.sleep(1000);
 
-        actions.moveToElement(finish).click().perform();
+        js.executeScript("arguments[0].click();", finish);
 
-        System.out.println("Checkout completed");
+        System.out.println("Checkout Completed Successfully");
     }
 }

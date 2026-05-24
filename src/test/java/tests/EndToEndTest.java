@@ -21,7 +21,8 @@ public class EndToEndTest extends BaseTest{
 
 	
 	@Test
-	public void testEcommerceFlow()
+	
+	public void testEcommerceFlow() throws InterruptedException
 	{
 		LoginPage loginpage= new LoginPage(getDriver());
 		loginpage.login("standard_user", "secret_sauce");
