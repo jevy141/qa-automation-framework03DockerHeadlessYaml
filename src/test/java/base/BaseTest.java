@@ -58,10 +58,15 @@ public class BaseTest {
 		}
 		
 		
-		if(browser == null)
-		{
-		    browser = "chrome";
+		
+		String browserName = System.getProperty("browser");
+
+		if(browserName == null) {
+			browserName = "chrome";
 		}
+		
+	
+		
 		
 		if(browser.equalsIgnoreCase("chrome"))
 		{
@@ -97,7 +102,7 @@ public class BaseTest {
 		
 		
 		
-		
+		 	
 	}
 	
 	

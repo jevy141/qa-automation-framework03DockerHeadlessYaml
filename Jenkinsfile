@@ -1,17 +1,24 @@
 pipeline {
     agent any
 
+parameters {
+        choice(
+            name: 'BROWSER',
+            choices: ['chrome', 'firefox'],
+            description: 'Select Browser'
+        )
+    }
     stages {
 
         stage('Docker Build') {
             steps {
-                bat 'docker build -t qa-framework .'
+                bat 'docker build -t qa-auutomation-framework03DockerHeadless .'
             }
         }
 
         stage('Docker Run') {
             steps {
-                bat 'docker run --rm qa-framework'//This automatically removes stopped containers.
+                bat 'docker run --rm qa-auutomation-framework03DockerHeadless  mvn test -Dbrowser=${params.BROWSER}' //This automatically removes stopped containers.
             }
         }
 
