@@ -1,5 +1,17 @@
 pipeline {
+
     agent any
+
+    triggers {
+        cron('H/5 * * * *')
+    }
+
+    options {
+        buildDiscarder(logRotator(
+            numToKeepStr: '10',
+            artifactNumToKeepStr: '5'
+        ))
+    }
 
     parameters {
         choice(
@@ -28,6 +40,12 @@ pipeline {
                 archiveArtifacts artifacts: 'reports/**/*', allowEmptyArchive: true
                 archiveArtifacts artifacts: 'screenshots/**/*', allowEmptyArchive: true
                 archiveArtifacts artifacts: 'test-output/**/*', allowEmptyArchive: true
+            }
+        }
+
+        stage('Docker Cleanup') {
+            steps {
+                bat 'docker system prune -af'
             }
         }
     }
