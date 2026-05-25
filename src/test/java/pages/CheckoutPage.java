@@ -35,28 +35,43 @@ public class CheckoutPage {
 
         // FIRST NAME
         WebElement firstNameField =
-                wait.until(ExpectedConditions.elementToBeClickable(firstName));
+                wait.until(ExpectedConditions.visibilityOfElementLocated(firstName));
 
         firstNameField.clear();
         firstNameField.sendKeys(first);
 
+        wait.until(driver ->
+                firstNameField.getAttribute("value").equals(first));
+
+
+
         // LAST NAME
         WebElement lastNameField =
-                wait.until(ExpectedConditions.elementToBeClickable(lastName));
+                wait.until(ExpectedConditions.visibilityOfElementLocated(lastName));
 
         lastNameField.clear();
         lastNameField.sendKeys(last);
 
+        wait.until(driver ->
+                lastNameField.getAttribute("value").equals(last));
+
+
+
         // ZIP
         WebElement zipField =
-                wait.until(ExpectedConditions.elementToBeClickable(zip));
+                wait.until(ExpectedConditions.visibilityOfElementLocated(zip));
 
         zipField.clear();
         zipField.sendKeys(postalcode);
 
+        wait.until(driver ->
+                zipField.getAttribute("value").equals(postalcode));
+
+
+
         // DEBUG LOGS
         System.out.println("First Name Entered: "
-                + firstNameField.getAttribute("value")); 
+                + firstNameField.getAttribute("value"));
 
         System.out.println("Last Name Entered: "
                 + lastNameField.getAttribute("value"));
@@ -64,16 +79,22 @@ public class CheckoutPage {
         System.out.println("Zip Entered: "
                 + zipField.getAttribute("value"));
 
+
+
         // CONTINUE
         WebElement continueButton =
                 wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
 
         continueButton.click();
 
+
+
         // VERIFY PAGE CHANGED
         wait.until(ExpectedConditions.urlContains("checkout-step-two"));
 
         System.out.println("Moved To Checkout Step Two");
+
+
 
         // FINISH
         WebElement finish =
