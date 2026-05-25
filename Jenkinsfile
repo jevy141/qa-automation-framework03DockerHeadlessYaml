@@ -12,13 +12,13 @@ parameters {
 
         stage('Docker Build') {
             steps {
-                bat 'docker build -t qa-auutomation-framework03DockerHeadless .'
+                bat 'docker build -t qa-auutomation-framework03dockerheadless .'
             }
         }
 
         stage('Docker Run') {
             steps {
-                bat 'docker run --rm qa-auutomation-framework03DockerHeadless  mvn test -Dbrowser=${params.BROWSER}' //This automatically removes stopped containers.
+                bat 'docker run --rm qa-auutomation-framework03dockerheadless  mvn test -Dbrowser=${params.BROWSER}' //This automatically removes stopped containers.
             }
         }
 
