@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     ca-certificates \
     fonts-liberation \
-    libasound2 \
+    libasound2t64 \
     libatk-bridge2.0-0 \
     libatk1.0-0 \
     libc6 \
@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y \
     libexpat1 \
     libfontconfig1 \
     libgbm1 \
-    libgcc1 \
+    libgcc-s1 \
     libglib2.0-0 \
     libgtk-3-0 \
     libnspr4 \
@@ -40,10 +40,11 @@ RUN apt-get update && apt-get install -y \
     libxrender1 \
     libxss1 \
     libxtst6 \
-    xdg-utils
+    xdg-utils \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 
-RUN dpkg -i google-chrome-stable_current_amd64.deb || apt-get -fy install
+RUN dpkg -i google-chrome-stable_current_amd64.deb || apt-get install -fy
 
-CMD ["mvn", "test"]
+CMD ["bash"]
