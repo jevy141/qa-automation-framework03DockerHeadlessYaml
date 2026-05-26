@@ -69,7 +69,7 @@ pipeline {
                 alwaysLinkToLastBuild: true,
                 allowMissing: true
             ])
-            
+            // also add plgin and toll in jenkins 
             allure([
             includeProperties: false,
             jdk: '',
