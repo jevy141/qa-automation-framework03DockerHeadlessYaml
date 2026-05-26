@@ -4,6 +4,7 @@ import java.time.Duration;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
@@ -36,15 +37,18 @@ public class CheckoutPage {
         JavascriptExecutor js = (JavascriptExecutor) driver;
 
         WebElement firstNameElement = wait.until(ExpectedConditions.elementToBeClickable(firstName));
-        firstNameElement.clear();
+        firstNameElement.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        firstNameElement.sendKeys(Keys.DELETE);
         firstNameElement.sendKeys(first);
 
         WebElement lastNameElement = wait.until(ExpectedConditions.elementToBeClickable(lastName));
-        lastNameElement.clear();
+        lastNameElement.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        lastNameElement.sendKeys(Keys.DELETE);
         lastNameElement.sendKeys(last);
 
         WebElement zipElement = wait.until(ExpectedConditions.elementToBeClickable(postalCode));
-        zipElement.clear();
+        zipElement.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        zipElement.sendKeys(Keys.DELETE);
         zipElement.sendKeys(zip);
 
         System.out.println("First Name Entered: " + firstNameElement.getAttribute("value"));
