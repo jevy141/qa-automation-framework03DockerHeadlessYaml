@@ -32,44 +32,35 @@ public class CheckoutPage {
 
     public void completeCheckout(String first, String last, String zip) {
 
-    	WebElement firstNameElement = wait.until(ExpectedConditions.elementToBeClickable(firstName));
-    	firstNameElement.clear();
-    	firstNameElement.sendKeys(first);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        JavascriptExecutor js = (JavascriptExecutor) driver;
 
-    	WebElement lastNameElement = wait.until(ExpectedConditions.elementToBeClickable(lastName));
-    	lastNameElement.clear();
-    	lastNameElement.sendKeys(last);
+        WebElement firstNameElement = wait.until(ExpectedConditions.elementToBeClickable(firstName));
+        firstNameElement.clear();
+        firstNameElement.sendKeys(first);
 
-    	WebElement zipElement = wait.until(ExpectedConditions.elementToBeClickable(postalCode));
-    	zipElement.clear();
-    	zipElement.sendKeys(zip);
+        WebElement lastNameElement = wait.until(ExpectedConditions.elementToBeClickable(lastName));
+        lastNameElement.clear();
+        lastNameElement.sendKeys(last);
 
-        WebElement continueElement = wait.until(
-                ExpectedConditions.elementToBeClickable(continueBtn)
-        );
+        WebElement zipElement = wait.until(ExpectedConditions.elementToBeClickable(postalCode));
+        zipElement.clear();
+        zipElement.sendKeys(zip);
 
-        ((JavascriptExecutor) driver)
-                .executeScript("arguments[0].scrollIntoView(true);", continueElement);
+        System.out.println("First Name Entered: " + firstNameElement.getAttribute("value"));
+        System.out.println("Last Name Entered: " + lastNameElement.getAttribute("value"));
+        System.out.println("Zip Entered: " + zipElement.getAttribute("value"));
 
-        continueElement.click();
+        WebElement continueElement = wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
+        js.executeScript("arguments[0].scrollIntoView({block:'center'});", continueElement);
+        js.executeScript("arguments[0].click();", continueElement);
 
-        // 🔥 IMPORTANT: wait for REAL page state, not DOM presence
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("finish")));
+        wait.until(ExpectedConditions.urlContains("checkout-step-two"));
 
-        WebElement finishElement = wait.until(
-                ExpectedConditions.elementToBeClickable(finishBtn)
-        );
+        WebElement finishElement = wait.until(ExpectedConditions.elementToBeClickable(finishBtn));
+        js.executeScript("arguments[0].scrollIntoView({block:'center'});", finishElement);
+        js.executeScript("arguments[0].click();", finishElement);
 
-        ((JavascriptExecutor) driver)
-                .executeScript("arguments[0].scrollIntoView({block:'center'});", finishElement);
-
-        ((JavascriptExecutor) driver)
-                .executeScript("arguments[0].click();", finishElement);
-
-        //finishElement.click();
-
-        // 🔥 FINAL RELIABLE CHECK (NOT URL)
         wait.until(ExpectedConditions.visibilityOfElementLocated(successMsg));
     }
-
 }
