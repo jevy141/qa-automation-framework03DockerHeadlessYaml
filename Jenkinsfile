@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     triggers {
-		githubPush()
+		githubPush()// webhook 
         cron('H H * * 0')
     }
 
