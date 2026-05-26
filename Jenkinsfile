@@ -69,6 +69,12 @@ pipeline {
                 alwaysLinkToLastBuild: true,
                 allowMissing: true
             ])
+            
+            allure([
+            includeProperties: false,
+            jdk: '',
+            results: [[path: 'target/allure-results']]
+        ])
 
             emailext(
                 subject: "Jenkins Build: ${currentBuild.currentResult}",
