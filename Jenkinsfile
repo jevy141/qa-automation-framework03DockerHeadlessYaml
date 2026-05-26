@@ -3,7 +3,8 @@ pipeline {
     agent any
 
     triggers {
-        cron('H/5 * * * *')
+		githubPush()
+        cron('H H * * 0')
     }
 
     options {
