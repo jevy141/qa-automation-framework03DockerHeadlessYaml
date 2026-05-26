@@ -32,7 +32,14 @@ pipeline {
 
         stage('Docker Run') {
             steps {
-                bat "docker run --rm qa-automation-framework03dockerheadless mvn test -Dbrowser=${params.BROWSER}"
+				
+                bat """
+                  docker run --rm ^
+                  -v %cd%:/app ^
+                  --shm-size=2g ^
+                   qa-automation-framework03dockerheadless ^
+                     mvn test -Dbrowser=${params.BROWSER}
+                     """
             }
         }
 

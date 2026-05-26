@@ -61,17 +61,20 @@ public class BaseTest {
 		
 		String browserName = System.getProperty("browser");
 
-		if(browserName == null) {
-			browserName = "chrome";
-		}
+	    if (browserName == null || browserName.isEmpty()) {
+
+	        browserName = browser;
+	    }
+
+	    System.out.println("Running on Browser: " + browserName);
+
 		
-	
 		
-		
-		if(browser.equalsIgnoreCase("chrome"))
+		if(browserName.equalsIgnoreCase("chrome"))
 		{
 
-	
+			System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
+
 			
 			ChromeOptions options = new ChromeOptions();
 
