@@ -84,6 +84,7 @@ public class BaseTest {
 		    options.addArguments("--disable-gpu");
 		    options.addArguments("--window-size=1920,1080");
 		    options.addArguments("--remote-allow-origins=*");
+		    options.addArguments("--disable-blink-features=AutomationControlled");
 
 		    Map<String, Object> prefs = new HashMap<>();
 
@@ -112,8 +113,11 @@ public class BaseTest {
 	@AfterMethod
 	public void tearDown()
 	{
-		getDriver().quit();
-		driver.remove();
+		if(getDriver() != null)
+		{
+		    getDriver().quit();
+		    driver.remove();
+		}
 	}
 	
 }
