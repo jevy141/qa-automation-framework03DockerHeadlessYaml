@@ -20,7 +20,7 @@ import pages.ProductsPage;
 public class EndToEndTest extends BaseTest{
 
 	
-	@Test(retryAnalyzer = utils.RetryAnalyzer.class)
+	@Test
 	
 	public void testEcommerceFlow() throws InterruptedException
 	{

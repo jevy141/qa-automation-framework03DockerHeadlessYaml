@@ -32,9 +32,17 @@ public class CheckoutPage {
 
     public void completeCheckout(String first, String last, String zip) {
 
-        wait.until(ExpectedConditions.elementToBeClickable(firstName)).sendKeys(first);
-        wait.until(ExpectedConditions.elementToBeClickable(lastName)).sendKeys(last);
-        wait.until(ExpectedConditions.elementToBeClickable(postalCode)).sendKeys(zip);
+    	WebElement firstNameElement = wait.until(ExpectedConditions.elementToBeClickable(firstName));
+    	firstNameElement.clear();
+    	firstNameElement.sendKeys(first);
+
+    	WebElement lastNameElement = wait.until(ExpectedConditions.elementToBeClickable(lastName));
+    	lastNameElement.clear();
+    	lastNameElement.sendKeys(last);
+
+    	WebElement zipElement = wait.until(ExpectedConditions.elementToBeClickable(postalCode));
+    	zipElement.clear();
+    	zipElement.sendKeys(zip);
 
         WebElement continueElement = wait.until(
                 ExpectedConditions.elementToBeClickable(continueBtn)
@@ -53,9 +61,12 @@ public class CheckoutPage {
         );
 
         ((JavascriptExecutor) driver)
-                .executeScript("arguments[0].scrollIntoView(true);", finishElement);
+                .executeScript("arguments[0].scrollIntoView({block:'center'});", finishElement);
 
-        finishElement.click();
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].click();", finishElement);
+
+        //finishElement.click();
 
         // 🔥 FINAL RELIABLE CHECK (NOT URL)
         wait.until(ExpectedConditions.visibilityOfElementLocated(successMsg));
