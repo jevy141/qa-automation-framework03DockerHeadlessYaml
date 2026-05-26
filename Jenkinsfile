@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     triggers {
-		githubPush()// webhook 
+        githubPush()
         cron('H H * * 0')
     }
 
@@ -32,14 +32,14 @@ pipeline {
 
         stage('Docker Run') {
             steps {
-				
                 bat """
-                  docker run --rm ^
-                  -v %cd%:/app ^
-                  --shm-size=2g ^
-                   qa-automation-framework03dockerheadless ^
-                     mvn test -Dbrowser=${params.BROWSER}
-                     """
+                docker run --rm ^
+                -v %WORKSPACE%:/app ^
+                -v %USERPROFILE%\\.m2:/root/.m2 ^
+                --shm-size=2g ^
+                qa-automation-framework03dockerheadless ^
+                mvn clean test -Dbrowser=${params.BROWSER}
+                """
             }
         }
 
