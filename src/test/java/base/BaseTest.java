@@ -33,91 +33,71 @@ import org.testng.annotations.Test;
 // again recheck for new Docker project
 public class BaseTest {
 
-	public static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
-	public Properties prop;
-	
-	
-	public WebDriver getDriver()
-	{
-		return driver.get();
-	}
-	
-	@Parameters("browser")
-	@BeforeMethod
-	public void setup(@Optional("chrome") String browser) throws IOException
-	{
-		try {
-			prop = new Properties();
-			FileInputStream fis= new FileInputStream("src/test/resources/config.properties");
-			prop.load(fis);
-			
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-		
-		
-		String browserName = System.getProperty("browser");
+    public static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+    public Properties prop;
 
-	    if (browserName == null || browserName.isEmpty()) {
+    public WebDriver getDriver() {
+        return driver.get();
+    }
 
-	        browserName = browser;
-	    }
+    @Parameters("browser")
+    @BeforeMethod
+    public void setup(@Optional("chrome") String browser) throws IOException {
 
-	    System.out.println("Running on Browser: " + browserName);
+        prop = new Properties();
+        FileInputStream fis = new FileInputStream("src/test/resources/config.properties");
+        prop.load(fis);
 
-		
-		
-		if(browserName.equalsIgnoreCase("chrome"))
-		{
+        String browserName = System.getProperty("browser");
 
-			System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
+        if (browserName == null || browserName.isEmpty()) {
+            browserName = browser;
+        }
 
-			
-			ChromeOptions options = new ChromeOptions();
+        System.out.println("Running on Browser: " + browserName);
 
-		    options.addArguments("--headless=new");
-		    options.addArguments("--no-sandbox");
-		    options.addArguments("--disable-dev-shm-usage");
-		    options.addArguments("--disable-gpu");
-		    options.addArguments("--window-size=1920,1080");
-		    options.addArguments("--remote-allow-origins=*");
-		    options.addArguments("--disable-blink-features=AutomationControlled");
+        if (browserName.equalsIgnoreCase("chrome")) {
 
-		    Map<String, Object> prefs = new HashMap<>();
+            System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
 
-		    prefs.put("credentials_enable_service", false);
-		    prefs.put("profile.password_manager_enabled", false);
+            ChromeOptions options = new ChromeOptions();
 
-		    options.setExperimentalOption("prefs", prefs);
+            options.addArguments("--headless=new");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--disable-gpu");
+            options.addArguments("--window-size=1920,1080");
+            options.addArguments("--remote-allow-origins=*");
+            options.addArguments("--disable-blink-features=AutomationControlled");
 
-		    driver.set(new ChromeDriver(options));
-		}
-		
-		
-	
-		
-		getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-		//getDriver().manage().window().setSize(new Dimension(1920,1080));)
-		getDriver().get("https://www.saucedemo.com/");
-		
-		
-		
-		
-		 	
-	}
-	
-	
-	@AfterMethod
-	public void tearDown()
-	{
-		if(getDriver() != null)
-		{
-		    getDriver().quit();
-		    driver.remove();
-		}
-	}
-	
+            Map<String, Object> prefs = new HashMap<>();
+            prefs.put("credentials_enable_service", false);
+            prefs.put("profile.password_manager_enabled", false);
+            options.setExperimentalOption("prefs", prefs);
+
+            driver.set(new ChromeDriver(options));
+        }
+
+        // ❗ IMPORTANT: DO NOT USE implicit wait in CI frameworks
+        getDriver().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(60));
+        getDriver().manage().timeouts().scriptTimeout(Duration.ofSeconds(30));
+
+        getDriver().manage().window().setSize(new Dimension(1920, 1080));
+
+        getDriver().get("https://www.saucedemo.com/");
+    }
+
+    @AfterMethod(alwaysRun = true)
+    public void tearDown() {
+
+        try {
+            if (getDriver() != null) {
+                getDriver().quit();
+            }
+        } catch (Exception e) {
+            System.out.println("Driver quit failed: " + e.getMessage());
+        } finally {
+            driver.remove();
+        }
+    }
 }

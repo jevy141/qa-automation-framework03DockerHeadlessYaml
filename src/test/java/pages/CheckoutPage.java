@@ -16,88 +16,39 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class CheckoutPage {
 
     WebDriver driver;
+    WebDriverWait wait;
 
     public CheckoutPage(WebDriver driver) {
         this.driver = driver;
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(20));
     }
 
     By firstName = By.id("first-name");
     By lastName = By.id("last-name");
-    By zip = By.id("postal-code");
-
+    By postalCode = By.id("postal-code");
     By continueBtn = By.id("continue");
-
     By finishBtn = By.id("finish");
+    By successMsg = By.xpath("//h2[@data-test='complete-header']");
 
-    public void completeCheckout(String first, String last, String postalcode) {
+    public void completeCheckout(String first, String last, String zip) {
 
-    	
-    	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(45));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(firstName)).sendKeys(first);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(lastName)).sendKeys(last);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(postalCode)).sendKeys(zip);
 
-    	JavascriptExecutor js = (JavascriptExecutor) driver;
+        wait.until(ExpectedConditions.elementToBeClickable(continueBtn)).click();
 
-    	// FIRST NAME
-    	WebElement firstNameField =
-    	        wait.until(ExpectedConditions.visibilityOfElementLocated(firstName));
+        wait.until(ExpectedConditions.urlContains("checkout-step-two"));
 
-    	js.executeScript("arguments[0].value='';", firstNameField);
-    	firstNameField.sendKeys(first);
+        wait.until(ExpectedConditions.elementToBeClickable(finishBtn)).click();
 
-    	// LAST NAME
-    	WebElement lastNameField =
-    	        wait.until(ExpectedConditions.visibilityOfElementLocated(lastName));
+        wait.until(ExpectedConditions.urlContains("checkout-complete"));
+    }
 
-    	js.executeScript("arguments[0].value='';", lastNameField);
-    	lastNameField.sendKeys(last);
-
-    	// ZIP
-    	WebElement zipField =
-    	        wait.until(ExpectedConditions.visibilityOfElementLocated(zip));
-
-    	js.executeScript("arguments[0].value='';", zipField);
-    	zipField.sendKeys(postalcode);
-
-    	// WAIT UNTIL VALUES ARE ACTUALLY ENTERED
-    	wait.until(driver ->
-    	        firstNameField.getAttribute("value").equals(first));
-
-    	wait.until(driver ->
-    	        lastNameField.getAttribute("value").equals(last));
-
-    	wait.until(driver ->
-    	        zipField.getAttribute("value").equals(postalcode));
-
-    	// DEBUG LOGS
-    	System.out.println("First Name Entered: "
-    	        + firstNameField.getAttribute("value"));
-
-    	System.out.println("Last Name Entered: "
-    	        + lastNameField.getAttribute("value"));
-
-    	System.out.println("Zip Entered: "
-    	        + zipField.getAttribute("value"));
-
-    	// CONTINUE
-    	WebElement continueButton =
-    	        wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
-
-    	continueButton.click();
-
-    	// VERIFY PAGE CHANGED
-    	wait.until(ExpectedConditions.urlContains("checkout-step-two"));
-
-    	System.out.println("Moved To Checkout Step Two");
-
-    	// FINISH
-    	WebElement finish =
-    	        wait.until(ExpectedConditions.elementToBeClickable(finishBtn));
-
-    	finish.click();
-
-    	System.out.println("Checkout Completed Successfully");
-    	
-
-    	}
-
+    public String getSuccessMessage() {
+        return wait.until(
+                ExpectedConditions.visibilityOfElementLocated(successMsg)
+        ).getText();
+    }
 
 }
