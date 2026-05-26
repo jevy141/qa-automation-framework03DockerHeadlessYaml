@@ -32,23 +32,33 @@ public class CheckoutPage {
 
     public void completeCheckout(String first, String last, String zip) {
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(firstName)).sendKeys(first);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(lastName)).sendKeys(last);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(postalCode)).sendKeys(zip);
+        wait.until(ExpectedConditions.elementToBeClickable(firstName)).sendKeys(first);
+        wait.until(ExpectedConditions.elementToBeClickable(lastName)).sendKeys(last);
+        wait.until(ExpectedConditions.elementToBeClickable(postalCode)).sendKeys(zip);
 
-        wait.until(ExpectedConditions.elementToBeClickable(continueBtn)).click();
+        WebElement continueElement = wait.until(
+                ExpectedConditions.elementToBeClickable(continueBtn)
+        );
 
-        wait.until(ExpectedConditions.urlContains("checkout-step-two"));
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].scrollIntoView(true);", continueElement);
 
-        wait.until(ExpectedConditions.elementToBeClickable(finishBtn)).click();
+        continueElement.click();
 
-        wait.until(ExpectedConditions.urlContains("checkout-complete"));
-    }
+        // 🔥 IMPORTANT: wait for REAL page state, not DOM presence
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("finish")));
 
-    public String getSuccessMessage() {
-        return wait.until(
-                ExpectedConditions.visibilityOfElementLocated(successMsg)
-        ).getText();
+        WebElement finishElement = wait.until(
+                ExpectedConditions.elementToBeClickable(finishBtn)
+        );
+
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].scrollIntoView(true);", finishElement);
+
+        finishElement.click();
+
+        // 🔥 FINAL RELIABLE CHECK (NOT URL)
+        wait.until(ExpectedConditions.visibilityOfElementLocated(successMsg));
     }
 
 }
