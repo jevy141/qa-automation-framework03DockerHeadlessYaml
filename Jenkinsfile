@@ -31,17 +31,16 @@ pipeline {
         }
 
         stage('Docker Run') {
-            steps {
-                bat """
-                docker run --rm ^
-                -v %WORKSPACE%:/app ^
-                -v %USERPROFILE%\\.m2:/root/.m2 ^
-                --shm-size=2g ^
-                qa-automation-framework03dockerheadless ^
-                mvn clean test -Dbrowser=${params.BROWSER}
-                """
-            }
-        }
+    steps {
+        bat """
+        docker run --rm ^
+        -v %WORKSPACE%:/app ^
+        --shm-size=2g ^
+        qa-automation-framework03dockerheadless ^
+        mvn clean test -Dbrowser=${params.BROWSER}
+        """
+    }
+}
 
         stage('Archive Artifacts') {
             steps {
