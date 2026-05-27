@@ -40,7 +40,6 @@ pipeline {
                     bat """
                     docker run --rm ^
                     -v %cd%:/app ^
-                    -v %USERPROFILE%\\.m2:/root/.m2 ^
                     --shm-size=2g ^
                     qa-automation-framework03dockerheadless ^
                     mvn test -Dbrowser=chrome -Dallure.results.directory=target/allure-results
@@ -56,7 +55,6 @@ pipeline {
                     bat """
                     docker run --rm ^
                     -v %cd%:/app ^
-                    -v %USERPROFILE%\\.m2:/root/.m2 ^
                     --shm-size=2g ^
                     qa-automation-framework03dockerheadless ^
                     mvn test -Dbrowser=chrome -Dallure.results.directory=target/allure-results
