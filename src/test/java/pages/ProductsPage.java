@@ -29,6 +29,9 @@ public class ProductsPage {
 		
 	}
 	
+	public boolean isProductsPageDisplayed() {
+	    return driver.getCurrentUrl().contains("inventory");
+	}
 	
 	
 	public void addProductToCart()
