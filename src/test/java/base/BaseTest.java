@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Properties;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.JavascriptExecutor;
 
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
@@ -108,11 +109,16 @@ public class BaseTest {
         System.out.println("Application URL: " + appUrl);
 
         try {
+
+            getDriver().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+
             getDriver().get(appUrl);
+
         } catch (Exception e) {
-            System.out.println("Page load timeout/hang. Retrying URL...");
-            getDriver().navigate().refresh();
-            getDriver().get(appUrl);
+
+            System.out.println("Page load timeout. Stopping page load and continuing...");
+
+            ((JavascriptExecutor) getDriver()).executeScript("window.stop();");
         }
     }
 
