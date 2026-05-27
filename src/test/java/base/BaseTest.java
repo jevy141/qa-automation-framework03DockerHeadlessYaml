@@ -27,8 +27,7 @@ import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
+
 
 
 //webhook test purpose writing here to commit happen and webhook in github will update
@@ -81,14 +80,7 @@ public class BaseTest {
             driver.set(new ChromeDriver(options));
         }
         
-        else if(browserName.equalsIgnoreCase("firefox"))
-        {
-            FirefoxOptions options = new FirefoxOptions();
-
-            options.addArguments("--headless");
-
-            driver.set(new FirefoxDriver(options));
-        }
+        
 
         // ❗ IMPORTANT: DO NOT USE implicit wait in CI frameworks
         getDriver().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(60));
@@ -96,7 +88,15 @@ public class BaseTest {
 
         getDriver().manage().window().setSize(new Dimension(1920, 1080));
 
-        getDriver().get("https://www.saucedemo.com/");
+        String env = System.getProperty("env", "qa");
+
+        System.out.println("Running on Environment: " + env);
+
+        String appUrl = prop.getProperty(env + ".url");
+
+        System.out.println("Application URL: " + appUrl);
+
+        getDriver().get(appUrl);
     }
 
     @AfterMethod(alwaysRun = true)

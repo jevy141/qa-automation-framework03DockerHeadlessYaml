@@ -1,0 +1,10 @@
+<suite name="Smoke Suite" parallel="false" thread-count="1">
+
+    <test name="Smoke Tests">
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="tests.EndToEndTest"/>
+        </classes>
+    </test>
+
+</suite>

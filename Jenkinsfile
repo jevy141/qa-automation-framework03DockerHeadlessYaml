@@ -19,7 +19,19 @@ pipeline {
             name: 'BROWSER',
             choices: ['chrome', 'firefox'],
             description: 'Select Browser'
-        )
+         )
+        
+        choice(
+    name: 'SUITE',
+    choices: ['smoke', 'regression'],
+    description: 'Select Test Suite'
+         )
+
+       choice(
+    name: 'ENV',
+    choices: ['qa', 'uat', 'prod'],
+    description: 'Select Environment'
+         )
     }
 
     stages {
@@ -31,39 +43,39 @@ pipeline {
         }
 
         stage('Parallel Execution') {
-    parallel {
+            parallel {
 
-        stage('Chrome Run') {
-            steps {
-                dir('chrome-run') {
-                    checkout scm
-                    bat """
-                    docker run --rm ^
-                    -v %cd%:/app ^
-                    --shm-size=2g ^
-                    qa-automation-framework03dockerheadless ^
-                    mvn test -Dbrowser=chrome -Dallure.results.directory=target/allure-results
-                    """
+                stage('Chrome Run 1') {
+                    steps {
+                        dir('chrome-run-1') {
+                            checkout scm
+                            bat """
+                            docker run --rm ^
+                            -v %cd%:/app ^
+                            --shm-size=2g ^
+                            qa-automation-framework03dockerheadless ^
+                            mvn test -Dbrowser=chrome -Dsuite=${params.SUITE} -Denv=${params.ENV} -Dallure.results.directory=target/allure-results
+                            """
+                        }
+                    }
+                }
+
+                stage('Chrome Run 2') {
+                    steps {
+                        dir('chrome-run-2') {
+                            checkout scm
+                            bat """
+                            docker run --rm ^
+                            -v %cd%:/app ^
+                            --shm-size=2g ^
+                            qa-automation-framework03dockerheadless ^
+                           mvn test -Dbrowser=chrome -Dsuite=${params.SUITE} -Denv=${params.ENV} -Dallure.results.directory=target/allure-results
+                            """
+                        }
+                    }
                 }
             }
         }
-
-        stage('Firefox Run') {
-            steps {
-                dir('firefox-run') {
-                    checkout scm
-                    bat """
-                    docker run --rm ^
-                    -v %cd%:/app ^
-                    --shm-size=2g ^
-                    qa-automation-framework03dockerheadless ^
-                    mvn test -Dbrowser=firefox -Dallure.results.directory=target/allure-results
-                    """
-                }
-            }
-        }
-    }
-}
 
         stage('Archive Artifacts') {
             steps {
@@ -94,15 +106,16 @@ pipeline {
                 alwaysLinkToLastBuild: true,
                 allowMissing: true
             ])
-            // also add plgin and toll in jenkins 
-         allure([
-    includeProperties: false,
-    jdk: '',
-    results: [
-        [path: 'chrome-run/target/allure-results'],
-        [path: 'firefox-run/target/allure-results']
-    ]
-])
+
+            allure([
+                includeProperties: false,
+                jdk: '',
+                results: [
+                    [path: 'chrome-run-1/target/allure-results'],
+                    [path: 'chrome-run-2/target/allure-results']
+                ]
+            ])
+
             emailext(
                 subject: "Jenkins Build: ${currentBuild.currentResult}",
                 body: """
@@ -118,5 +131,4 @@ ${env.BUILD_URL}
             )
         }
     }
-    
 }

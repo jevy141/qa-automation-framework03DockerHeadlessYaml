@@ -1,0 +1,12 @@
+<suite name="Regression Suite" parallel="false" thread-count="1">
+
+    <test name="Regression Tests">
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="tests.EndToEndTest"/>
+            <class name="tests.ApiUiIntegrationTest"/>
+            <class name="api.UserApiTest"/>
+        </classes>
+    </test>
+
+</suite>
