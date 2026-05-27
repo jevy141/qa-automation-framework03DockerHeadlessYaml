@@ -35,25 +35,31 @@ pipeline {
 
         stage('Chrome Run 1') {
             steps {
-                bat """
-                docker run --rm ^
-                -v %WORKSPACE%:/app ^
-                --shm-size=2g ^
-                qa-automation-framework03dockerheadless ^
-                mvn test -Dbrowser=chrome -Dallure.results.directory=target/allure-results-chrome1
-                """
+                dir('chrome-run-1') {
+                    checkout scm
+                    bat """
+                    docker run --rm ^
+                    -v %cd%:/app ^
+                    --shm-size=2g ^
+                    qa-automation-framework03dockerheadless ^
+                    mvn test -Dbrowser=chrome -Dallure.results.directory=target/allure-results
+                    """
+                }
             }
         }
 
         stage('Chrome Run 2') {
             steps {
-                bat """
-                docker run --rm ^
-                -v %WORKSPACE%:/app ^
-                --shm-size=2g ^
-                qa-automation-framework03dockerheadless ^
-                mvn test -Dbrowser=chrome -Dallure.results.directory=target/allure-results-chrome2
-                """
+                dir('chrome-run-2') {
+                    checkout scm
+                    bat """
+                    docker run --rm ^
+                    -v %cd%:/app ^
+                    --shm-size=2g ^
+                    qa-automation-framework03dockerheadless ^
+                    mvn test -Dbrowser=chrome -Dallure.results.directory=target/allure-results
+                    """
+                }
             }
         }
     }
@@ -64,8 +70,8 @@ pipeline {
                 archiveArtifacts artifacts: 'reports/**/*', allowEmptyArchive: true
                 archiveArtifacts artifacts: 'screenshots/**/*', allowEmptyArchive: true
                 archiveArtifacts artifacts: 'test-output/**/*', allowEmptyArchive: true
-                archiveArtifacts artifacts: 'target/allure-results-chrome1/**/*', allowEmptyArchive: true
-                archiveArtifacts artifacts: 'target/allure-results-chrome2/**/*', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'chrome-run-1/target/allure-results/**/*', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'chrome-run-2/target/allure-results/**/*', allowEmptyArchive: true
             }
         }
 
@@ -93,8 +99,8 @@ pipeline {
     includeProperties: false,
     jdk: '',
     results: [
-        [path: 'target/allure-results-chrome1'],
-        [path: 'target/allure-results-chrome2']
+        [path: 'chrome-run-1/target/allure-results'],
+        [path: 'chrome-run-2/target/allure-results']
     ]
 ])
             emailext(
