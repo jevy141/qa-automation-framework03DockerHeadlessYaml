@@ -33,9 +33,9 @@ pipeline {
         stage('Parallel Execution') {
     parallel {
 
-        stage('Chrome Run 1') {
+        stage('Chrome Run') {
             steps {
-                dir('chrome-run-1') {
+                dir('chrome-run') {
                     checkout scm
                     bat """
                     docker run --rm ^
@@ -48,16 +48,16 @@ pipeline {
             }
         }
 
-        stage('Chrome Run 2') {
+        stage('Firefox Run') {
             steps {
-                dir('chrome-run-2') {
+                dir('firefox-run') {
                     checkout scm
                     bat """
                     docker run --rm ^
                     -v %cd%:/app ^
                     --shm-size=2g ^
                     qa-automation-framework03dockerheadless ^
-                    mvn test -Dbrowser=chrome -Dallure.results.directory=target/allure-results
+                    mvn test -Dbrowser=firefox -Dallure.results.directory=target/allure-results
                     """
                 }
             }
@@ -99,8 +99,8 @@ pipeline {
     includeProperties: false,
     jdk: '',
     results: [
-        [path: 'chrome-run-1/target/allure-results'],
-        [path: 'chrome-run-2/target/allure-results']
+        [path: 'chrome-run/target/allure-results'],
+        [path: 'firefox-run/target/allure-results']
     ]
 ])
             emailext(

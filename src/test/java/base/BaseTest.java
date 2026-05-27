@@ -27,6 +27,9 @@ import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+
 
 //webhook test purpose writing here to commit happen and webhook in github will update
 //email test start ngrok then git commit file 
@@ -76,6 +79,15 @@ public class BaseTest {
             options.setExperimentalOption("prefs", prefs);
 
             driver.set(new ChromeDriver(options));
+        }
+        
+        else if(browserName.equalsIgnoreCase("firefox"))
+        {
+            FirefoxOptions options = new FirefoxOptions();
+
+            options.addArguments("--headless");
+
+            driver.set(new FirefoxDriver(options));
         }
 
         // ❗ IMPORTANT: DO NOT USE implicit wait in CI frameworks

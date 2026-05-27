@@ -49,6 +49,7 @@ RUN apt-get update && apt-get install -y \
     libxss1 \
     libxtst6 \
     xdg-utils \
+	firefox \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Google Chrome
