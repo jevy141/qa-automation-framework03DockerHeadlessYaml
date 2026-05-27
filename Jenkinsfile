@@ -36,11 +36,7 @@ pipeline {
 
     stages {
 		
-		stage('Clean Workspace') {
-    steps {
-        deleteDir()
-    }
-}
+	
 
         stage('Docker Build') {
             steps {
