@@ -10,7 +10,7 @@ import pages.LoginPage;
 import pages.ProductsPage;
 
 import static io.restassured.RestAssured.given;
-
+//using api UI test 
 public class ApiUiIntegrationTest extends BaseTest {
 
     @Test
