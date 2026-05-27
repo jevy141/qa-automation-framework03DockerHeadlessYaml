@@ -2,6 +2,13 @@ FROM maven:3.9.6-eclipse-temurin-17
 
 WORKDIR /app
 
+# Copy pom first
+COPY pom.xml .
+
+# Pre-download dependencies so for every paralel execution no re-download
+RUN mvn dependency:go-offline
+
+# Copy full project
 COPY . .
 
 # Install dependencies
