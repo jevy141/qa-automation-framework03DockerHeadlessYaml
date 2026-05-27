@@ -26,6 +26,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
+import org.openqa.selenium.PageLoadStrategy;
 
 
 
@@ -71,6 +72,16 @@ public class BaseTest {
             options.addArguments("--window-size=1920,1080");
             options.addArguments("--remote-allow-origins=*");
             options.addArguments("--disable-blink-features=AutomationControlled");
+            options.addArguments("--disable-extensions");
+            options.addArguments("--disable-popup-blocking");
+            options.addArguments("--disable-notifications");
+            options.addArguments("--disable-background-networking");
+            options.addArguments("--disable-sync");
+            options.addArguments("--metrics-recording-only");
+            options.addArguments("--disable-default-apps");
+            options.addArguments("--no-first-run");
+            options.addArguments("--disable-features=Translate,BackForwardCache");
+            options.setPageLoadStrategy(PageLoadStrategy.EAGER);
 
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("credentials_enable_service", false);
@@ -96,7 +107,13 @@ public class BaseTest {
 
         System.out.println("Application URL: " + appUrl);
 
-        getDriver().get(appUrl);
+        try {
+            getDriver().get(appUrl);
+        } catch (Exception e) {
+            System.out.println("Page load timeout/hang. Retrying URL...");
+            getDriver().navigate().refresh();
+            getDriver().get(appUrl);
+        }
     }
 
     @AfterMethod(alwaysRun = true)

@@ -52,7 +52,7 @@ pipeline {
                             bat """
                             docker run --rm ^
                             -v %cd%:/app ^
-                            --shm-size=2g ^
+                            --shm-size=4g ^
                             qa-automation-framework03dockerheadless ^
                             mvn test -Dbrowser=chrome -Dsuite=${params.SUITE} -Denv=${params.ENV} -Dallure.results.directory=target/allure-results
                             """
@@ -67,7 +67,7 @@ pipeline {
                             bat """
                             docker run --rm ^
                             -v %cd%:/app ^
-                            --shm-size=2g ^
+                            --shm-size=4g ^
                             qa-automation-framework03dockerheadless ^
                            mvn test -Dbrowser=chrome -Dsuite=${params.SUITE} -Denv=${params.ENV} -Dallure.results.directory=target/allure-results
                             """
