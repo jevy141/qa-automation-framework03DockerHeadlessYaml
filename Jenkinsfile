@@ -40,7 +40,7 @@ pipeline {
                 -v %WORKSPACE%:/app ^
                 --shm-size=2g ^
                 qa-automation-framework03dockerheadless ^
-                mvn clean test -Dbrowser=chrome
+                mvn test -Dbrowser=chrome -Dallure.results.directory=target/allure-results-chrome1
                 """
             }
         }
@@ -52,7 +52,7 @@ pipeline {
                 -v %WORKSPACE%:/app ^
                 --shm-size=2g ^
                 qa-automation-framework03dockerheadless ^
-                mvn clean test -Dbrowser=chrome
+                mvn test -Dbrowser=chrome -Dallure.results.directory=target/allure-results-chrome2
                 """
             }
         }
@@ -64,6 +64,8 @@ pipeline {
                 archiveArtifacts artifacts: 'reports/**/*', allowEmptyArchive: true
                 archiveArtifacts artifacts: 'screenshots/**/*', allowEmptyArchive: true
                 archiveArtifacts artifacts: 'test-output/**/*', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'target/allure-results-chrome1/**/*', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'target/allure-results-chrome2/**/*', allowEmptyArchive: true
             }
         }
 
@@ -87,12 +89,14 @@ pipeline {
                 allowMissing: true
             ])
             // also add plgin and toll in jenkins 
-            allure([
-            includeProperties: false,
-            jdk: '',
-            results: [[path: 'target/allure-results']]
-        ])
-
+         allure([
+    includeProperties: false,
+    jdk: '',
+    results: [
+        [path: 'target/allure-results-chrome1'],
+        [path: 'target/allure-results-chrome2']
+    ]
+])
             emailext(
                 subject: "Jenkins Build: ${currentBuild.currentResult}",
                 body: """
