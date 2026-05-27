@@ -30,15 +30,32 @@ pipeline {
             }
         }
 
-        stage('Docker Run') {
-    steps {
-        bat """
-        docker run --rm ^
-        -v %WORKSPACE%:/app ^
-        --shm-size=2g ^
-        qa-automation-framework03dockerheadless ^
-        mvn clean test -Dbrowser=${params.BROWSER}
-        """
+        stage('Parallel Execution') {
+    parallel {
+
+        stage('Chrome Run 1') {
+            steps {
+                bat """
+                docker run --rm ^
+                -v %WORKSPACE%:/app ^
+                --shm-size=2g ^
+                qa-automation-framework03dockerheadless ^
+                mvn clean test -Dbrowser=chrome
+                """
+            }
+        }
+
+        stage('Chrome Run 2') {
+            steps {
+                bat """
+                docker run --rm ^
+                -v %WORKSPACE%:/app ^
+                --shm-size=2g ^
+                qa-automation-framework03dockerheadless ^
+                mvn clean test -Dbrowser=chrome
+                """
+            }
+        }
     }
 }
 
@@ -91,4 +108,5 @@ ${env.BUILD_URL}
             )
         }
     }
+    
 }
