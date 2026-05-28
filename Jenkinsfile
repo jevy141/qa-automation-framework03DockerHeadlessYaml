@@ -23,10 +23,21 @@ pipeline {
         }
 
         stage('Docker Compose Run') {
+    parallel {
+
+        stage('Smoke Compose') {
             steps {
-                bat 'docker compose up --abort-on-container-exit --exit-code-from regression-tests'
+                bat 'docker compose run --rm smoke-tests'
             }
         }
+
+        stage('Regression Compose') {
+            steps {
+                bat 'docker compose run --rm regression-tests'
+            }
+        }
+    }
+}
 
         stage('Docker Compose Down') {
             steps {
