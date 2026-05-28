@@ -1,0 +1,35 @@
+services:
+
+  smoke-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: qa-automation-framework03dockerheadless-yaml
+    container_name: smoke-tests
+    working_dir: /app
+    volumes:
+      - .:/app
+    shm_size: "4gb"
+    command: >
+      mvn test
+      -Dbrowser=chrome
+      -Dsuite=smoke
+      -Denv=qa
+      -Dallure.results.directory=target/allure-results-smoke
+
+  regression-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: qa-automation-framework03dockerheadless-yaml
+    container_name: regression-tests
+    working_dir: /app
+    volumes:
+      - .:/app
+    shm_size: "4gb"
+    command: >
+      mvn test
+      -Dbrowser=chrome
+      -Dsuite=regression
+      -Denv=qa
+      -Dallure.results.directory=target/allure-results-regression
