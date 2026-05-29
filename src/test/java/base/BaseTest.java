@@ -6,6 +6,8 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Properties;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import utils.ScreenShotUtil;
+
 import org.openqa.selenium.JavascriptExecutor;
 
 import org.openqa.selenium.Dimension;
@@ -20,7 +22,7 @@ import org.openqa.selenium.edge.EdgeOptions;
 
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-
+import org.testng.ITestResult;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -122,8 +124,13 @@ public class BaseTest {
         }
     }
 
+ 
     @AfterMethod(alwaysRun = true)
-    public void tearDown() {
+    public void tearDown(ITestResult result) {
+
+        if (result.getStatus() == ITestResult.FAILURE) {
+            ScreenShotUtil.captureScreenShot(getDriver(), result.getName());
+        }
 
         try {
             if (getDriver() != null) {
