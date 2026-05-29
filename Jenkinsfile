@@ -43,9 +43,20 @@ pipeline {
             ])
             
             emailext(
-    to: 'jevy141hanjenkins@gmail.com',
-    subject: "Test Email From Jenkins",
-    body: "Email Extension plugin is working."
+    subject: "Build ${currentBuild.currentResult} - ${env.JOB_NAME}",
+    mimeType: 'text/html',
+    body: """
+    <h2>Build Status: ${currentBuild.currentResult}</h2>
+    <p>Job: ${env.JOB_NAME}</p>
+    <p>Build Number: ${env.BUILD_NUMBER}</p>
+
+    <p>
+      <a href="${env.BUILD_URL}">
+        Open Build
+      </a>
+    </p>
+    """,
+    to: "jevy141hanjenkins@gmail.com"
 )
         }
     }
