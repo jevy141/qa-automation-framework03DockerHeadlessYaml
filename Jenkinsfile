@@ -24,6 +24,12 @@ pipeline {
     post {
         always {
             junit 'target/surefire-reports/junitreports/*.xml'
+            
+            allure([
+            includeProperties: false,
+            jdk: '',
+            results: [[path: 'target/allure-results-smoke']]
+        ])
 
             publishHTML([
                 allowMissing: false,
