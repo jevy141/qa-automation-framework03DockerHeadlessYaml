@@ -1,83 +1,46 @@
 pipeline {
-
     agent any
 
-    triggers {
-        githubPush()
-        cron('H H * * 0')
-    }
-
-    options {
-        buildDiscarder(logRotator(
-            numToKeepStr: '10',
-            artifactNumToKeepStr: '5'
-        ))
+    tools {
+        maven 'Maven3'
     }
 
     stages {
-
-        stage('Docker Compose Build') {
+        stage('Checkout') {
             steps {
-                bat 'docker compose build'
+                git branch: 'main',
+                    url: 'https://github.com/jevy141/qa-automation-framework03DockerHeadlessYaml.git'
             }
         }
 
-        stage('Docker Compose Run') {
-    parallel {
-
-        stage('Smoke Compose') {
+        stage('Run Smoke Tests') {
             steps {
-                bat 'docker compose run --rm smoke-tests'
-            }
-        }
-
-        stage('Regression Compose') {
-            steps {
-                bat 'docker compose run --rm regression-tests'
-            }
-        }
-    }
-}
-
-        stage('Docker Compose Down') {
-            steps {
-                bat 'docker compose down'
+                sh 'mvn clean test -Dsuite=smoke'
             }
         }
     }
 
     post {
-
         always {
+            junit 'target/surefire-reports/junitreports/*.xml'
 
-            archiveArtifacts artifacts: 'target/allure-results-smoke/**/*', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'target/allure-results-regression/**/*', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'reports/**/*', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'screenshots/**/*', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'test-output/**/*', allowEmptyArchive: true
-
-            allure([
-                includeProperties: false,
-                jdk: '',
-                results: [
-                    [path: 'target/allure-results-smoke'],
-                    [path: 'target/allure-results-regression']
-                ]
+            publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'target/surefire-reports',
+                reportFiles: 'index.html',
+                reportName: 'TestNG Report'
             ])
 
-            emailext(
-                subject: "Docker Compose Jenkins Build: ${currentBuild.currentResult}",
-                body: """
-Build Status: ${currentBuild.currentResult}
-
-Project: ${env.JOB_NAME}
-Build Number: ${env.BUILD_NUMBER}
-
-Console:
-${env.BUILD_URL}
-""",
-                to: "jevy141hanjenkins@gmail.com"
-            )
+            publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'reports',
+                reportFiles: 'extent-report.html',
+                reportName: 'Extent Report'
+            ])
         }
     }
 }
