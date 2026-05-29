@@ -44,7 +44,18 @@ pipeline {
 
     post {
         always {
+			
+			script {
+            sh '''
+                sudo chown -R jenkins:jenkins target reports screenshots || true
+                sudo chmod -R 775 target reports screenshots || true
+            '''
+        }
+
+			
             junit 'target/surefire-reports/junitreports/*.xml'
+            
+            
             
       
             allure([
