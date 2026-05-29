@@ -1,21 +1,22 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven3'
-    }
-
     stages {
-        stage('Checkout') {
+        stage('Docker Compose Build') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/jevy141/qa-automation-framework03DockerHeadlessYaml.git'
+                sh 'docker compose build smoke-tests'
             }
         }
 
-        stage('Run Smoke Tests') {
+        stage('Docker Smoke Test') {
             steps {
-                sh 'mvn clean test -Dsuite=smoke'
+                sh 'docker compose run --rm smoke-tests'
+            }
+        }
+
+        stage('Docker Compose Down') {
+            steps {
+                sh 'docker compose down --remove-orphans'
             }
         }
     }
@@ -41,24 +42,18 @@ pipeline {
                 reportFiles: 'extent-report.html',
                 reportName: 'Extent Report'
             ])
-            
-            emailext(
-    subject: "Build ${currentBuild.currentResult} - ${env.JOB_NAME}",
-    mimeType: 'text/html',
-    body: """
-    <h2>Build Status: ${currentBuild.currentResult}</h2>
-    <p>Job: ${env.JOB_NAME}</p>
-    <p>Build Number: ${env.BUILD_NUMBER}</p>
 
-    <p>
-      <a href="${env.BUILD_URL}">
-        Open Build
-      </a>
-    </p>
-    """,
-    to: "jevy141hanjenkins@gmail.com"
-)
+            emailext(
+                subject: "Build ${currentBuild.currentResult} - ${env.JOB_NAME}",
+                mimeType: 'text/html',
+                body: """
+                    <h2>Build Status: ${currentBuild.currentResult}</h2>
+                    <p>Job: ${env.JOB_NAME}</p>
+                    <p>Build Number: ${env.BUILD_NUMBER}</p>
+                    <p><a href="${env.BUILD_URL}">Open Build</a></p>
+                """,
+                to: "jevy141hanjenkins@gmail.com"
+            )
         }
     }
 }
-// using webhook 
