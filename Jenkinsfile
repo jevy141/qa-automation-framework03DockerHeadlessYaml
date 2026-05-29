@@ -1,16 +1,24 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(
+            name: 'SUITE',
+            choices: ['smoke', 'regression'],
+            description: 'Select test suite'
+        )
+    }
+
     stages {
         stage('Docker Compose Build') {
             steps {
-                sh 'docker compose build smoke-tests'
+                sh "docker compose build ${params.SUITE}-tests"
             }
         }
 
-        stage('Docker Smoke Test') {
+        stage('Docker Test') {
             steps {
-                sh 'docker compose run --rm smoke-tests'
+                sh "docker compose run --rm ${params.SUITE}-tests"
             }
         }
 
@@ -35,7 +43,7 @@ pipeline {
             allure([
                 includeProperties: false,
                 jdk: '',
-                results: [[path: 'target/allure-results-smoke']]
+                results: [[path: "target/allure-results-${params.SUITE}"]]
             ])
 
             publishHTML([
@@ -57,10 +65,11 @@ pipeline {
             ])
 
             emailext(
-                subject: "Build ${currentBuild.currentResult} - ${env.JOB_NAME}",
+                subject: "Build ${currentBuild.currentResult} - ${env.JOB_NAME} - ${params.SUITE}",
                 mimeType: 'text/html',
                 body: """
                     <h2>Build Status: ${currentBuild.currentResult}</h2>
+                    <p>Suite: ${params.SUITE}</p>
                     <p>Job: ${env.JOB_NAME}</p>
                     <p>Build Number: ${env.BUILD_NUMBER}</p>
                     <p><a href="${env.BUILD_URL}">Open Build</a></p>
