@@ -14,6 +14,13 @@ pipeline {
             }
         }
 
+        stage('Fix Permissions') {
+            steps {
+                sh 'sudo chown -R jenkins:jenkins target || true'
+                sh 'sudo chmod -R 775 target || true'
+            }
+        }
+
         stage('Docker Compose Down') {
             steps {
                 sh 'docker compose down --remove-orphans'
@@ -24,12 +31,12 @@ pipeline {
     post {
         always {
             junit 'target/surefire-reports/junitreports/*.xml'
-            
+
             allure([
-            includeProperties: false,
-            jdk: '',
-            results: [[path: 'target/allure-results-smoke']]
-        ])
+                includeProperties: false,
+                jdk: '',
+                results: [[path: 'target/allure-results-smoke']]
+            ])
 
             publishHTML([
                 allowMissing: false,
