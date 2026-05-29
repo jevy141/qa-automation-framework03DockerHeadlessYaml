@@ -4,7 +4,7 @@ pipeline {
     parameters {
         choice(
             name: 'SUITE',
-            choices: ['smoke', 'regression'],
+            choices: ['smoke', 'regression', 'all'],
             description: 'Select test suite'
         )
         
@@ -17,14 +17,33 @@ pipeline {
 
     stages {
         stage('Docker Compose Build') {
-            steps {
+    steps {
+        script {
+            if (params.SUITE == 'all') {
+                sh 'docker compose build smoke-tests regression-tests'
+            } else {
                 sh "docker compose build ${params.SUITE}-tests"
             }
         }
+    }
+}
 
         stage('Docker Test') {
     steps {
-        sh "docker compose run --rm ${params.SUITE}-tests mvn test -Dbrowser=chrome -Dsuite=${params.SUITE} -Denv=${params.ENV} -Dallure.results.directory=target/allure-results-${params.SUITE}"
+        script {
+            if (params.SUITE == 'all') {
+                parallel(
+                    "Smoke Tests": {
+                        sh "docker compose run --rm smoke-tests mvn test -Dbrowser=chrome -Dsuite=smoke -Denv=${params.ENV} -Dallure.results.directory=target/allure-results-smoke"
+                    },
+                    "Regression Tests": {
+                        sh "docker compose run --rm regression-tests mvn test -Dbrowser=chrome -Dsuite=regression -Denv=${params.ENV} -Dallure.results.directory=target/allure-results-regression"
+                    }
+                )
+            } else {
+                sh "docker compose run --rm ${params.SUITE}-tests mvn test -Dbrowser=chrome -Dsuite=${params.SUITE} -Denv=${params.ENV} -Dallure.results.directory=target/allure-results-${params.SUITE}"
+            }
+        }
     }
 }
 
@@ -58,11 +77,24 @@ pipeline {
             
             
       
-            allure([
-                includeProperties: false,
-                jdk: '',
-                results: [[path: "target/allure-results-${params.SUITE}"]]
-            ])
+            script {
+    if (params.SUITE == 'all') {
+        allure([
+            includeProperties: false,
+            jdk: '',
+            results: [
+                [path: 'target/allure-results-smoke'],
+                [path: 'target/allure-results-regression']
+            ]
+        ])
+    } else {
+        allure([
+            includeProperties: false,
+            jdk: '',
+            results: [[path: "target/allure-results-${params.SUITE}"]]
+        ])
+    }
+}
 
             publishHTML([
                 allowMissing: false,

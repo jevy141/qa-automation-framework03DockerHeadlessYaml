@@ -44,8 +44,8 @@ public class EndToEndTest extends BaseTest{
 
 		String actualtext = message.getText();
 		//Assert.assertEquals(actualtext, "Wrong Text");
-Assert.fail("Intentional Failure");// checking for retry max count 2  total attempt 3 including original
-		//Assert.assertTrue(actualtext.contains("Thank you for your order!"));
+        //Assert.fail("Intentional Failure");// checking for retry max count 2  total attempt 3 including original
+		Assert.assertTrue(actualtext.contains("Thank you for your order!"));
 		
 		
 		
