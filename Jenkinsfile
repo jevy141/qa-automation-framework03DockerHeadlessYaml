@@ -7,6 +7,12 @@ pipeline {
             choices: ['smoke', 'regression'],
             description: 'Select test suite'
         )
+        
+         choice(
+        name: 'ENV',
+        choices: ['qa', 'uat', 'prod'],
+        description: 'Select environment'
+    )
     }
 
     stages {
@@ -17,10 +23,10 @@ pipeline {
         }
 
         stage('Docker Test') {
-            steps {
-                sh "docker compose run --rm ${params.SUITE}-tests"
-            }
-        }
+    steps {
+        sh "docker compose run --rm ${params.SUITE}-tests mvn test -Dbrowser=chrome -Dsuite=${params.SUITE} -Denv=${params.ENV} -Dallure.results.directory=target/allure-results-${params.SUITE}"
+    }
+}
 
         stage('Fix Permissions') {
             steps {
@@ -39,7 +45,8 @@ pipeline {
     post {
         always {
             junit 'target/surefire-reports/junitreports/*.xml'
-
+            
+      
             allure([
                 includeProperties: false,
                 jdk: '',
@@ -64,12 +71,19 @@ pipeline {
                 reportName: 'Extent Report'
             ])
 
+archiveArtifacts artifacts: 'screenshots/**/*', allowEmptyArchive: true
+archiveArtifacts artifacts: 'reports/**/*', allowEmptyArchive: true
+archiveArtifacts artifacts: 'target/surefire-reports/**/*', allowEmptyArchive: true
+archiveArtifacts artifacts: 'target/allure-results-*/*', allowEmptyArchive: true
+
+
             emailext(
-                subject: "Build ${currentBuild.currentResult} - ${env.JOB_NAME} - ${params.SUITE}",
+                subject: "Build ${currentBuild.currentResult} - ${params.SUITE} - ${params.ENV}",
                 mimeType: 'text/html',
                 body: """
                     <h2>Build Status: ${currentBuild.currentResult}</h2>
                     <p>Suite: ${params.SUITE}</p>
+                    <p>Environment: ${params.ENV}</p>
                     <p>Job: ${env.JOB_NAME}</p>
                     <p>Build Number: ${env.BUILD_NUMBER}</p>
                     <p><a href="${env.BUILD_URL}">Open Build</a></p>
