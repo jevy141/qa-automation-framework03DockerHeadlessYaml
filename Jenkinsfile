@@ -41,6 +41,20 @@ pipeline {
                 reportFiles: 'extent-report.html',
                 reportName: 'Extent Report'
             ])
+            
+            emailext(
+    subject: "Jenkins Build ${currentBuild.currentResult}: ${env.JOB_NAME}",
+    body: """
+Build Status: ${currentBuild.currentResult}
+
+Project: ${env.JOB_NAME}
+Build Number: ${env.BUILD_NUMBER}
+
+Console:
+${env.BUILD_URL}
+""",
+    to: "jevy141hanjenkins@gmail.com"
+)
         }
     }
 }
