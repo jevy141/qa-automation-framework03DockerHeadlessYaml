@@ -1,64 +1,182 @@
-# Jenkins CI/CD Setup
+# Selenium Cloud-Based QA Automation Framework
+
+## Overview
+
+This project is an end-to-end QA Automation Framework built using Selenium WebDriver, Java, TestNG, Maven, Jenkins, Docker, GitHub, Rest Assured, and AWS EC2.
+
+The framework follows the Page Object Model (POM) design pattern and supports UI Automation, API Automation, CI/CD integration, Dockerized execution, reporting, parallel execution, and cloud-based deployment.
+
+---
+
+## Tech Stack
+
+* Java
+* Selenium WebDriver
+* TestNG
+* Maven
+* Rest Assured
+* Jenkins
+* Docker
+* Docker Compose
+* Git & GitHub
+* GitHub Webhooks
+* AWS EC2
+* Allure Reports
+* Extent Reports
+
+---
+
+## Framework Features
+
+* Page Object Model (POM)
+* UI & API Automation Testing
+* Smoke & Regression Test Suites
+* Environment-Based Execution (QA/UAT/PROD)
+* Screenshot Capture on Failure
+* Allure Reports
+* Extent Reports
+* TestNG Reports
+* Artifact Archiving
+* Parallel Suite Execution
+* Dockerized Test Execution
+* Jenkins CI/CD Integration
+* GitHub Webhook Integration
+* Email Notifications
+
+---
+
+## Jenkins CI/CD Setup
 
 This project is integrated with Jenkins for automated CI/CD execution.
 
-## Features Implemented
+### Features Implemented
 
 * GitHub Webhook Integration
+* Parameterized Jenkins Pipelines
 * Dockerized Test Execution
-* Parallel Suite Execution
 * Smoke & Regression Suite Selection
 * QA / UAT / PROD Environment Selection
-* Allure Reports
-* Extent Reports
+* Parallel Suite Execution
+* Allure Report Publishing
+* Extent Report Publishing
 * API + UI Integration Testing
 * Scheduled Jenkins Builds
 * Email Notifications
+* Artifact Archiving
+
+---
 
 ## Jenkins Pipeline Flow
 
-1. GitHub Push Trigger
-2. Jenkins Webhook Trigger
-3. Docker Image Build
-4. Parallel Test Execution
-5. Allure & Extent Report Generation
-6. Email Notification
+```text
+GitHub Push
+      │
+      ▼
+GitHub Webhook Trigger
+      │
+      ▼
+Jenkins Pipeline
+      │
+      ▼
+Docker Image Build
+      │
+      ▼
+Smoke / Regression Execution
+      │
+      ▼
+Parallel Execution (Optional)
+      │
+      ▼
+Allure & Extent Report Generation
+      │
+      ▼
+Email Notification
+```
 
-## Technologies Used
-
-* Java
-* Selenium
-* TestNG
-* Maven
-* Jenkins
-* Docker
-* Allure Reports
-* Extent Reports
-* Rest Assured
+---
 
 ## Running Tests via Jenkins
 
-Use **Build With Parameters** in Jenkins:
+Use **Build With Parameters**:
 
-* Browser: Chrome / Firefox
-* Suite: Smoke / Regression
-* Environment: QA / UAT / PROD
+```text
+SUITE       : Smoke / Regression / All
+ENVIRONMENT : QA / UAT / PROD
+```
+
+---
+
+## Running Tests Locally
+
+```bash
+mvn clean test -Dbrowser=chrome -Dsuite=smoke -Denv=qa
+```
+
+---
 
 ## Docker Execution
 
-Docker image is built automatically during Jenkins execution.
-
-Example:
+Build Docker Image:
 
 ```bash
-docker build -t qa-automation-framework03dockerheadless .
+docker compose build smoke-tests
 ```
 
-## Webhook Setup
+Run Smoke Suite:
 
-GitHub webhook is connected to Jenkins using ngrok public URL.
+```bash
+docker compose run --rm smoke-tests
+```
+
+Run Regression Suite:
+
+```bash
+docker compose run --rm regression-tests
+```
+
+---
+
+## AWS Deployment
+
+* Jenkins deployed on AWS EC2
+* Docker & Docker Compose installed on EC2
+* GitHub integrated using Webhooks
+* Test execution performed on EC2 Linux environment
+
+---
 
 ## Reports
 
-* Extent Reports generated after execution
-* Allure Reports generated and published in Jenkins
+### Allure Reports
+
+* Generated after execution
+* Published automatically in Jenkins
+
+### Extent Reports
+
+* Generated after execution
+* Archived as Jenkins artifacts
+
+### TestNG Reports
+
+* Generated after every execution
+* Published through Jenkins
+
+---
+
+## Webhook Setup
+
+GitHub repository is integrated with Jenkins using GitHub Webhooks for automatic pipeline triggering on every code push.
+
+---
+
+## Project Repository
+
+GitHub:
+https://github.com/jevy141/qa-automation-framework03DockerHeadlessYaml
+
+---
+
+## Author
+
+Sohan Rana
